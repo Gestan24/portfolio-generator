@@ -1,16 +1,9 @@
+const fs = require('fs');
+
 const inquirer = require('inquirer');
 
-// const fs = require('fs');
-// const generatePage = require('./src/page-template');
+const generatePage = require('./src/page-template');
 
-// const pageHTML = generatePage(name, github);
-
-
-// fs.writeFile('index.html', pageHTML, err => {
-//   if (err) throw err;
-
-//   console.log('Portfolio complete! Check out index.html to see the output!');
-// });
 
 const promptUser = () => {
 
@@ -88,19 +81,7 @@ const promptUser = () => {
 
       message: 'Provide some information about yourself:',
 
-      when: ({ confirmAbout }) => {
-
-        if (confirmAbout) {
-
-          return true;
-
-        } else {
-
-          return false;
-
-        }
-
-      }
+      when: ({ confirmAbout }) => confirmAbout
 
     }
 
@@ -109,13 +90,6 @@ const promptUser = () => {
 };
 
 const promptProject = portfolioData => {
-
-  // If there's no 'projects' array property, create one
-  if (!portfolioData.projects) {
-
-    portfolioData.projects = [];
-
-  }
   console.log(`
 
 =================
@@ -124,11 +98,18 @@ Add a New Project
 
 `);
 
+  // If there's no 'projects' array property, create one
+  if (!portfolioData.projects) {
+
+    portfolioData.projects = [];
+
+  }
+
   return inquirer.prompt([
 
     {
       type: 'input',
-      name: 'Project name',
+      name: 'name',
       message: 'What is the name of your project?',
       validate: projectNameInput => {
 
@@ -149,11 +130,11 @@ Add a New Project
 
     {
       type: 'input',
-      name: 'Project description',
+      name: 'description',
       message: 'Provide a description of the project (Required)',
-      validate: projectDescriptionInput => {
+      validate: descriptionInput => {
 
-        if (projectDescriptionInput) {
+        if (descriptionInput) {
 
           return true;
 
@@ -177,11 +158,11 @@ Add a New Project
 
     {
       type: 'input',
-      name: 'Project Github link',
+      name: 'link',
       message: 'Enter the GitHub link to your project. (Required)',
-      validate: githubLinkInput => {
+      validate: linkInput => {
 
-        if (githubLinkInput) {
+        if (linkInput) {
 
           return true;
 
@@ -236,6 +217,14 @@ promptUser()
 
   .then(portfolioData => {
 
-    console.log(portfolioData);
+
+    const pageHTML = generatePage(portfolioData);
+
+
+    fs.writeFile('index.html', pageHTML, err => {
+      if (err) throw err;
+
+      console.log('Portfolio complete! Check out index.html to see the output!');
+    });
 
   });
