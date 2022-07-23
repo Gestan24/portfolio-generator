@@ -17,11 +17,11 @@ const promptUser = () => {
   return inquirer.prompt([
 
     {
-  
+
       type: 'input',
-  
+
       name: 'name',
-  
+
       message: 'What is your name?',
 
       validate: nameInput => {
@@ -39,7 +39,7 @@ const promptUser = () => {
         }
 
       }
-  
+
     },
 
     {
@@ -63,8 +63,20 @@ const promptUser = () => {
           return false;
 
         }
-        
+
       }
+
+    },
+
+    {
+
+      type: 'confirm',
+
+      name: 'confirmAbout',
+
+      message: 'Would you like to enter some information about yourself for an "About" section?',
+
+      default: true
 
     },
 
@@ -74,16 +86,30 @@ const promptUser = () => {
 
       name: 'about',
 
-      message: 'Provide some information about yourself:'
+      message: 'Provide some information about yourself:',
+
+      when: ({ confirmAbout }) => {
+
+        if (confirmAbout) {
+
+          return true;
+
+        } else {
+
+          return false;
+
+        }
+
+      }
 
     }
 
   ]);
-  
+
 };
 
 const promptProject = portfolioData => {
-  
+
   // If there's no 'projects' array property, create one
   if (!portfolioData.projects) {
 
@@ -117,7 +143,7 @@ Add a New Project
           return false;
 
         }
-        
+
       }
     },
 
@@ -138,7 +164,7 @@ Add a New Project
           return false;
 
         }
-        
+
       }
     },
 
@@ -166,7 +192,7 @@ Add a New Project
           return false;
 
         }
-        
+
       }
     },
 
@@ -183,33 +209,33 @@ Add a New Project
       message: 'Would you like to enter another project?',
       default: false
     }
-    
+
   ])
-  
-  .then(projectData => {
 
-    portfolioData.projects.push(projectData);
+    .then(projectData => {
 
-    if (projectData.confirmAddProject) {
+      portfolioData.projects.push(projectData);
 
-      return promptProject(portfolioData);
+      if (projectData.confirmAddProject) {
 
-    } else {
+        return promptProject(portfolioData);
 
-      return portfolioData;
+      } else {
 
-    }
+        return portfolioData;
 
-  });
+      }
+
+    });
 
 };
 
 promptUser()
 
-.then(promptProject)
+  .then(promptProject)
 
-.then(portfolioData => {
+  .then(portfolioData => {
 
-  console.log(portfolioData);
+    console.log(portfolioData);
 
-});
+  });
